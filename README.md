@@ -3,7 +3,7 @@
 #### Etapa 1: clonar o repositório
 
 ```bash
-clone do git https://github.com/MateusSantosAlmeida/hellow-crm.git
+git clone https://github.com/MateusSantosAlmeida/hellow-crm.git
 ```
 
 ```bash
