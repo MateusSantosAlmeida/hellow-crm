@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
-use Illuminate\Support\Facades\Log;
 
 class ChatGPTController extends Controller
 {
@@ -14,13 +13,13 @@ class ChatGPTController extends Controller
 
         $client = new Client();
 
-        $response = $client->request('POST', 'https://api.openai.com/v1/chat/completions', [
+        $response = $client->request('POST', env('API_OPENAI_CHAT_COMPLETIONS'), [
             'headers' => [
-                'Authorization' => 'Bearer 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',
+                'Authorization' => 'Bearer '.env('TOKEN_OPENAI'),
                 'Content-Type' => 'application/json',
             ],
             'json' => [
-                'model' => 'gpt-3.5-turbo-1106',
+                'model' => env('API_OPENAI_MODEL'),
                 'messages' => [
                     ['role' => 'system', 'content' => 'You are'],
                     ['role' => 'user', 'content' => $question],
@@ -36,10 +35,10 @@ class ChatGPTController extends Controller
     private function versionar($content){
 
         $client = new Client();
-        // Log::info($content);
+        
         $feedback = $content['choices'][0]['message']['content'];
 
-        $client->request('POST', 'http://127.0.0.1:8001/api/versionar', [
+        $client->request('POST', env('API_VERSIONAMENTO_FEEDBACK'), [
             'headers' => [
                 'Content-Type' => 'application/json',
             ],
@@ -51,13 +50,12 @@ class ChatGPTController extends Controller
 
     private function prepareQuestion($data)
     {
-        // Valores totais
+
         $totalInvoiceResult = $data['invoiceResult']['total'] ?? 0;
         $totalQuoteResult = $data['quoteResult']['total'] ?? 0;
         $totalOfferResult = $data['offerResult']['total'] ?? 0;
         $totalPaymentResult = $data['paymentResult']['total'] ?? 0;
 
-        // Contagens totais
         $countPaymentResult = $data['paymentResult']['count'] ?? 0;
         $countInvoiceResult = array_sum(array_column($data['invoiceResult']['performance'], 'count')) ?? 0;
         $countQuoteResult = array_sum(array_column($data['quoteResult']['performance'], 'count')) ?? 0;
