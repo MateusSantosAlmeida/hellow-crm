@@ -258,7 +258,7 @@ const request = {
     axios.defaults.baseURL = URL_FEEDBACK_IA;
 
     try {
-      const response = await axios.post('/feedback-geral', body);
+      const response = await axios.post('feedback-geral', body);
       successHandler(response, {
         notifyOnSuccess: false,
         notifyOnFailed: false,
