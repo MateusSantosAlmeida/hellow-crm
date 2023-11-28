@@ -16,7 +16,7 @@ class ChatGPTController extends Controller
 
         $response = $client->request('POST', 'https://api.openai.com/v1/chat/completions', [
             'headers' => [
-                'Authorization' => 'Bearer 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',
+                'Authorization' => 'Bearer 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',
                 'Content-Type' => 'application/json',
             ],
             'json' => [
@@ -27,8 +27,26 @@ class ChatGPTController extends Controller
                 ],
             ],
         ]);
+
+        $this->versionar(json_decode((string) $response->getBody(), true));
         
         return response()->json(json_decode((string) $response->getBody(), true));
+    }
+
+    private function versionar($content){
+
+        $client = new Client();
+        // Log::info($content);
+        $feedback = $content['choices'][0]['message']['content'];
+
+        $client->request('POST', 'http://127.0.0.1:8001/api/versionar', [
+            'headers' => [
+                'Content-Type' => 'application/json',
+            ],
+            'json' => [
+                'content' => $feedback,
+            ],
+        ]);
     }
 
     private function prepareQuestion($data)
