@@ -1,5 +1,6 @@
 import { Tag, Row, Col } from 'antd';
 import useLanguage from '@/locale/useLanguage';
+import { Button } from 'antd';
 
 import { useMoney } from '@/settings';
 
@@ -11,6 +12,10 @@ import RecentTable from './components/RecentTable';
 import SummaryCard from './components/SummaryCard';
 import PreviewCard from './components/PreviewCard';
 import CustomerPreviewCard from './components/CustomerPreviewCard';
+
+import React, { useState } from 'react';
+
+import FeedbackIaCard from './components/FeedbackIaCard'
 
 export default function DashboardModule() {
   const translate = useLanguage();
@@ -138,8 +143,74 @@ export default function DashboardModule() {
     );
   });
 
+  const [showRow, setShowRow] = useState(false);
+  const [showButton, setShowButton] = useState(true);
+
+
+  // const { result: clientResult22, isLoading: clientLoading22 } = useFetch(() =>
+  //   request.feedbackIA({ body: {
+  //     quoteResult,
+  //     offerResult,
+  //     paymentResult,
+  //     clientResult
+  //   } })
+  // );
+
+  const [contentFeedback, setContentFeedback] = useState("");
+  const [isLoadingFeedback, setIsLoadingFeedback] = useState(false);
+
+
+  const toggleRow = async () => {
+    setShowRow(true);
+    setShowButton(false);
+    setIsLoadingFeedback(true);
+  
+    try {
+      let response = await request.feedbackIA({ 
+        body: {
+          invoiceResult,
+          quoteResult,
+          offerResult,
+          paymentResult,
+          clientResult
+        } 
+      });
+  
+      setContentFeedback(response);
+      setIsLoadingFeedback(false);
+    } catch (error) {
+      console.error('Erro ao obter feedback:', error);
+      setIsLoadingFeedback(false);
+      // Handle error appropriately
+    }
+  };
+  
+
   return (
     <>
+      {showButton && (
+        <>
+          <Button type="dashed" onClick={toggleRow}>
+            Gerar Recomendação
+          </Button>
+        </>
+      )}
+
+      <div className="space30"></div>
+
+      {showRow && (
+        <>
+          <Row style={{ width: '100%' }}>
+            <FeedbackIaCard
+              title={"Recomendação"}
+              content={contentFeedback}
+              isLoading={isLoadingFeedback}
+            />
+          </Row>
+          <div className="space30"></div>
+        </>
+      )}
+
       <Row gutter={[32, 32]}>
         {cards}
         <SummaryCard

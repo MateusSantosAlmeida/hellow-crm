@@ -11,3 +11,8 @@ export const DOWNLOAD_BASE_URL =
     ? import.meta.env.VITE_BACKEND_SERVER + 'download/'
     : 'http://localhost:8888/download/';
 export const ACCESS_TOKEN_NAME = 'x-auth-token';
+export const URL_FEEDBACK_IA = 
+import.meta.env.PROD || import.meta.env.VITE_DEV_REMOTE
+    ? import.meta.env.FEEDBACK_IA_SERVER 
+    : 'http://127.0.0.1:8000/api/';
+

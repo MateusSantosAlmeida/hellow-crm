@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { API_BASE_URL } from '@/config/serverApiConfig';
+import { API_BASE_URL, URL_FEEDBACK_IA } from '@/config/serverApiConfig';
 
 import errorHandler from './errorHandler';
 import successHandler from './successHandler';
@@ -249,6 +249,21 @@ const request = {
         notifyOnFailed: true,
       });
       return response.data;
+    } catch (error) {
+      return errorHandler(error);
+    }
+  },
+
+  feedbackIA: async ({ body }) => {
+    axios.defaults.baseURL = URL_FEEDBACK_IA;
+
+    try {
+      const response = await axios.post('/feedback-geral', body);
+      successHandler(response, {
+        notifyOnSuccess: false,
+        notifyOnFailed: false,
+      });
+      return response.data.choices[0].message.content
     } catch (error) {
       return errorHandler(error);
     }
